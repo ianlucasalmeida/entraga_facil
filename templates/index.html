@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loja Virtual</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            background-color: #333;
+            padding: 10px 20px;
+            color: white;
+        }
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+        .product-card {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 200px;
+            padding: 10px;
+            margin: 10px;
+            text-align: center;
+        }
+        .product-card img {
+            max-width: 100%;
+            height: auto;
+        }
+        .carrinho {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background-color: #28a745;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <div class="navbar">
+        <h1>Minha Loja Virtual</h1>
+        <div>
+            <a href="/loja">Produtos</a>
+            <a href="/carrinho" id="link-carrinho">Carrinho (<span id="qtd-carrinho">0</span>)</a>
+        </div>
+    </div>
+
+    <h2>Bem-vindo à nossa loja!</h2>
+    <p>Escolha entre nossos produtos abaixo. Clique em qualquer item para ver detalhes.</p>
+
+    <div id="produtos-container"></div>
+
+    <!-- Carrinho Floating Button -->
+    <div class="carrinho" onclick="window.location.href='/carrinho'">
+        Carrinho (<span id="qtd-carrinho-footer">0</span>)
+    </div>
+
+    <script>
+        // Carrega produtos da API
+        fetch("/produtos")
+            .then(res => res.json())
+            .then(data => {
+                const container = document.getElementById("produtos-container");
+                data.forEach(produto => {
+                    const div = document.createElement("div");
+                    div.className = "product-card";
+                    div.innerHTML = `
+                        <img src="${produto.image}" alt="${produto.title}">
+                        <h4>${produto.title}</h4>
+                        <p>R$${parseFloat(produto.price).toFixed(2)}</p>
+                        <button onclick='verDetalhe(${produto.id})'>Ver Detalhes</button>
+                    `;
+                    container.appendChild(div);
+                });
+            });
+
+        function verDetalhe(id) {
+            window.location.href = `/produto?id=${id}`;
+        }
+
+        // Atualizar contador do carrinho
+        function atualizarContador() {
+            let carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
+            const count = carrinho.length;
+            document.querySelectorAll("#qtd-carrinho, #qtd-carrinho-footer").forEach(el => {
+                el.innerText = count;
+            });
+        }
+
+        atualizarContador();
+    </script>
+
+</body>
+</html>

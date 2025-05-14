@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  app:
+    build: .
+    container_name: flask_app
+    ports:
+      - "5000:5000"
+    depends_on:
+      - rabbitmq
+    environment:
+      - RABBITMQ_HOST=rabbitmq
+    volumes:
+      - .:/app
+      - sqlite_data:/app
+
+  pedido_consumer:
+    build: .
+    container_name: pedido_consumer
+    depends_on:
+      - rabbitmq
+    environment:
+      - RABBITMQ_HOST=rabbitmq
+    command: ["python", "consumer_pedido.py"]
+    volumes:
+      - .:/app
+      - sqlite_data:/app
+
+  notificacao_consumer:
+    build: .
+    container_name: notificacao_consumer
+    depends_on:
+      - rabbitmq
+    environment:
+      - RABBITMQ_HOST=rabbitmq
+    command: ["python", "consumer_notificacao.py"]
+    volumes:
+      - .:/app
+
+volumes:
+  sqlite_data:

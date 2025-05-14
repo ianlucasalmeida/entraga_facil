@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrinho de Compras</title>
+</head>
+<body>
+    <h1>Seu Carrinho</h1>
+    <ul id="itens"></ul>
+    <p><strong>Total:</strong> R$<span id="total">0.00</span></p>
+    <form action="/pedido" method="POST">
+        <input type="hidden" name="cliente" id="cliente" value="Cliente Anônimo">
+        <button type="submit">Finalizar Pedido</button>
+    </form>
+
+    <script>
+        let carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
+
+        if (carrinho.length === 0) {
+            document.getElementById("itens").innerHTML = "<li>Carrinho vazio.</li>";
+        } else {
+            let total = 0;
+            carrinho.forEach((item, i) => {
+                const li = document.createElement("li");
+                li.innerText = `${item.title} - R$${parseFloat(item.price).toFixed(2)}`;
+                document.getElementById("itens").appendChild(li);
+                total += parseFloat(item.price);
+            });
+            document.getElementById("total").innerText = total.toFixed(2);
+        }
+
+        // Salvar cliente temporário (opcional)
+        const clienteInput = document.getElementById("cliente");
+        if (!clienteInput.value || clienteInput.value === "") {
+            clienteInput.value = prompt("Digite seu nome:", "Cliente Anônimo");
+        }
+    </script>
+</body>
+</html>

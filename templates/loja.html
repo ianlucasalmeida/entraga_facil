@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loja</title>
+    <link rel="stylesheet" href="/static/css/loja.css">
+</head>
+<body>
+    <h1>Todos os Produtos</h1>
+    <div id="produtos"></div>
+
+    <script>
+        fetch("/produtos")
+            .then(res => res.json())
+            .then(data => {
+                const container = document.getElementById("produtos");
+                data.forEach(p => {
+                    const div = document.createElement("div");
+                    div.style.width = "30%";
+                    div.innerHTML = `
+                        <h3>${p.title}</h3>
+                        <img src="${p.image}" width="150"><br>
+                        <strong>R$${parseFloat(p.price).toFixed(2)}</strong><br>
+                        <button onclick="verDetalhe(${p.id})">Ver Detalhes</button>
+                    `;
+                    container.appendChild(div);
+                });
+            });
+
+        function verDetalhe(id) {
+            window.location.href = `/produto/${id}`;
+        }
+    </script>
+</body>
+</html>
