@@ -46,7 +46,6 @@ def callback(ch, method, properties, body):
 
     salvar_pedido_sqlite(pedido)
 
-    # Enviar notificação
     enviar_notificacao(pedido)
 
     ch.basic_ack(delivery_tag=method.delivery_tag)
@@ -54,7 +53,7 @@ def callback(ch, method, properties, body):
 def enviar_notificacao(pedido):
     connection = pika.BlockingConnection(pika.ConnectionParameters(host="rabbitmq"))
     channel = connection.channel()
-    channel.queue_declare(queue="fila_notificacoes", durable=True)
+    channel.queue_declare(queue='fila_notificacoes', durable=True)
     msg = f"Pedido de {pedido['cliente']} foi processado com sucesso!"
     channel.basic_publish(
         exchange='',
@@ -69,9 +68,9 @@ def iniciar_consumidor():
         try:
             connection = pika.BlockingConnection(pika.ConnectionParameters(host="rabbitmq"))
             channel = connection.channel()
-            channel.queue_declare(queue="fila_pedidos", durable=True)
+            channel.queue_declare(queue='fila_pedidos', durable=True)
             channel.basic_qos(prefetch_count=1)
-            channel.basic_consume(queue="fila_pedidos", on_message_callback=callback)
+            channel.basic_consume(queue='fila_pedidos', on_message_callback=callback)
             print(' [*] Aguardando pedidos...')
             channel.start_consuming()
         except Exception as e:

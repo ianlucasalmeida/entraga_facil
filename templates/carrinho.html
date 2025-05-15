@@ -3,14 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Carrinho de Compras</title>
+    <title>Carrinho</title>
 </head>
 <body>
     <h1>Seu Carrinho</h1>
     <ul id="itens"></ul>
     <p><strong>Total:</strong> R$<span id="total">0.00</span></p>
-    <form action="/pedido" method="POST">
-        <input type="hidden" name="cliente" id="cliente" value="Cliente Anônimo">
+        <label for="cliente">Nome do Cliente:</label>
+        <input type="text" id="cliente" name="cliente" value="Cliente Anônimo" title="Digite o nome do cliente" placeholder="Digite seu nome"><br><br>
+        <input type="text" name="cliente" value="Cliente Anônimo" title="Digite o nome do cliente" placeholder="Digite seu nome"><br><br>
         <button type="submit">Finalizar Pedido</button>
     </form>
 
@@ -28,12 +29,6 @@
                 total += parseFloat(item.price);
             });
             document.getElementById("total").innerText = total.toFixed(2);
-        }
-
-        // Salvar cliente temporário (opcional)
-        const clienteInput = document.getElementById("cliente");
-        if (!clienteInput.value || clienteInput.value === "") {
-            clienteInput.value = prompt("Digite seu nome:", "Cliente Anônimo");
         }
     </script>
 </body>
